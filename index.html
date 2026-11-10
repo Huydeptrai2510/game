@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arena Codex — Bách khoa nhân vật MOBA</title>
+<meta name="description" content="Thư viện nhân vật MOBA: tìm kiếm, lọc và xem hồ sơ từng nhân vật.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#/home" aria-label="Arena Codex - Trang chủ"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z" fill="none" stroke="#45D483" stroke-width="2"/><path d="m8 15 4-8 4 8" fill="none" stroke="#fff" stroke-width="2"/></svg><span>Arena Codex</span></a>
+  <nav class="dnav" aria-label="Điều hướng chính">
+    <a href="#/home" data-r="home">Home</a>
+    <a href="#/characters" data-r="characters">Characters</a>
+    <a href="#/compare" data-r="compare">Compare</a>
+    <a href="#/database" data-r="database">Database</a>
+    <a href="#/settings" data-r="settings">Settings</a>
+  </nav>
+  <div class="hr"><a class="icon-btn hset" href="#/settings" aria-label="Cài đặt">⚙</a><button class="icon-btn" id="btn-search" type="button" aria-label="Tìm kiếm"><svg viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2"/></svg></button></div>
+</header>
+
+<main id="app">
+  <section id="v-home" class="view" hidden>
+    <div class="hero wrap">
+      <h1>Hồ sơ mọi nhân vật trong một thư viện</h1>
+      <p>Tra cứu vai trò, lộ đường, kỹ năng và cốt truyện. Gõ tên, danh hiệu hay kỹ năng, không cần dấu.</p>
+      <form id="hero-form" class="searchbar" role="search"><input id="hero-q" type="search" placeholder="Ví dụ: kiem si, phap su, xa thu" aria-label="Tìm nhân vật" autocomplete="off"><button class="btn" type="submit">Tìm</button></form>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="wrap">
+      <div class="sec-h"><h2>Nhân vật nổi bật</h2><a href="#/characters">Xem tất cả</a></div>
+      <div class="grid" id="featured"></div>
+      <div class="sec-h"><h2>Mới thêm</h2></div>
+      <div class="grid" id="latest"></div>
+      <div class="sec-h"><h2>Theo vai trò</h2></div>
+      <div class="chips" id="role-groups"></div>
+    </div>
+  </section>
+
+  <section id="v-characters" class="view wrap" hidden>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Tìm theo tên, kỹ năng, cốt truyện…" aria-label="Tìm kiếm" autocomplete="off">
+      <select id="sort" aria-label="Sắp xếp"><option value="id">Theo ID</option><option value="name">Theo tên A–Z</option><option value="role">Theo vai trò</option></select>
+      <button class="btn ghost fbtn" id="btn-filter" type="button">Bộ lọc <b id="fcount" hidden>0</b></button>
+    </div>
+    <div class="layout">
+      <aside class="filters" id="filters" aria-label="Bộ lọc">
+        <div class="fhead"><strong>Bộ lọc</strong><button class="link" id="btn-clear" type="button">Xóa lọc</button><button class="icon-btn fclose" id="btn-fclose" type="button" aria-label="Đóng">✕</button></div>
+        <div id="filters-body"></div>
+        <button class="btn fdone" id="btn-fdone" type="button">Xem kết quả</button>
+      </aside>
+      <div>
+        <p class="count" id="count" aria-live="polite"></p>
+        <div class="grid" id="grid"></div>
+        <div class="empty" id="empty" hidden><h3>Không tìm thấy nhân vật</h3><p>Thử bỏ bớt bộ lọc hoặc đổi từ khóa.</p><button class="btn ghost" id="btn-empty-clear" type="button">Xóa lọc và từ khóa</button></div>
+        <div class="more"><button class="btn ghost" id="btn-more" type="button" hidden>Tải thêm</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-profile" class="view" hidden></section>
+
+  <section id="v-compare" class="view wrap" hidden><h2>So sánh nhân vật</h2><p class="muted">Chọn 2–3 nhân vật để đặt cạnh nhau.</p><div class="cmp-sel" id="cmp-sel"></div><div id="cmp-out"></div></section>
+  <section id="v-settings" class="view wrap" hidden><h2>Cài đặt</h2><div id="settings"></div></section>
+
+  <section id="v-database" class="view wrap" hidden>
+    <h2>Kiểm tra dữ liệu</h2>
+    <div id="report"></div>
+  </section>
+
+  <section id="v-error" class="view wrap" hidden>
+    <div class="empty err"><h3>Không tải được data.txt</h3><p id="err-msg"></p><p class="muted">Nếu mở file trực tiếp (file://) trình duyệt sẽ chặn fetch. Hãy chạy bằng máy chủ local hoặc GitHub Pages (xem README).</p><button class="btn" onclick="location.reload()">Thử lại</button></div>
+  </section>
+</main>
+
+<nav class="bnav" aria-label="Điều hướng nhanh">
+  <a href="#/home" data-r="home">Home</a>
+  <a href="#/characters" data-r="characters">Nhân vật</a>
+  <button type="button" id="bn-search">Tìm</button>
+  <a href="#/compare" data-r="compare">So sánh</a>
+  <a href="#/database" data-r="database">Dữ liệu</a>
+</nav>
+<div class="backdrop" id="backdrop" hidden></div>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Xem ảnh" hidden><button class="icon-btn" id="lb-x" type="button" aria-label="Đóng">✕</button><img id="lb-img" alt=""></div>
+<script src="app.js"></script>
+</body>
+</html>
